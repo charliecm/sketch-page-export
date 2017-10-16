@@ -4,13 +4,13 @@
     {
       "script" : "script.cocoascript",
       "name" : "Export Current Page as PNG...",
-      "handlers": "saveOne",
+      "handler": "saveOne",
       "identifier" : "saveOne"
     },
     {
       "script" : "script.cocoascript",
       "name" : "Export All Pages as PNG...",
-      "handlers": "saveAll",
+      "handler": "saveAll",
       "identifier" : "saveAll"
     }
   ],
