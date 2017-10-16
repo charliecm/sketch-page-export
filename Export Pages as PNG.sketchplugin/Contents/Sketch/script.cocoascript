@@ -6,7 +6,7 @@ var run = function(context, isAll) {
 
     var document = context.document
     var defaults = NSUserDefaults.standardUserDefaults()
-    var defaultsKey = "VDExportPagesToPNG"
+    var defaultsKey = 'VDExportPagesToPNG'
     var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary()
 
     var exportedCount = 0
@@ -14,8 +14,8 @@ var run = function(context, isAll) {
     // Define alert
     var alert = NSAlert.alloc().init()
     alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
-    alert.addButtonWithTitle("Save")
-    alert.addButtonWithTitle("Cancel")
+    alert.addButtonWithTitle('Save')
+    alert.addButtonWithTitle('Cancel')
 
     // Define accessory view
     var accessoryView = NSView.alloc().initWithFrame(NSMakeRect(0,0, 336, 56))
@@ -31,7 +31,7 @@ var run = function(context, isAll) {
     var choosePathButton = NSButton.alloc().initWithFrame(NSMakeRect(246, 28, 96, 32))
     choosePathButton.bezelStyle = NSRoundedBezelStyle
     choosePathButton.setButtonType(NSMomentaryPushInButton)
-    choosePathButton.title = "Choose..."
+    choosePathButton.title = 'Choose...'
     choosePathButton.setCOSJSTargetFunction(function chooseDirectory() {
 
                                             // Configuring save panel
@@ -49,7 +49,7 @@ var run = function(context, isAll) {
 
     // Background Color Label
     var backgroundColorLabel = NSTextField.alloc().initWithFrame(NSMakeRect(1, 3, 245, 17))
-    backgroundColorLabel.stringValue = "Background Color"
+    backgroundColorLabel.stringValue = 'Background Color'
     backgroundColorLabel.selectable = false
     backgroundColorLabel.drawsBackground = false
     backgroundColorLabel.bezeled = false
@@ -83,20 +83,20 @@ var run = function(context, isAll) {
             artboard.includeBackgroundColorInExport = true
             item.insertLayer_atIndex(artboard, 0)
 
-            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(2.0, "", "png")
+            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(2.0, ', 'png')
             artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0)
             var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard)
-            document.saveExportRequest_toFile(exportRequests[0], pathString() + "/" + artboard.nodeName() + ".png")
+            document.saveExportRequest_toFile(exportRequests[0], pathString() + '/' + artboard.nodeName() + '.png')
 
             item.removeLayerAtIndex(0)
 
             if (!isAll && item == currentPage) {
-                document.showMessage(item.name() + " has been exported")
+                document.showMessage(item.name() + ' has been exported')
                 break;
             }
 
             exportedCount += 1
-            document.showMessage(exportedCount + " pages have been exported")
+            document.showMessage(exportedCount + ' pages have been exported')
         }
 
 
@@ -115,23 +115,23 @@ var run = function(context, isAll) {
     }
 
     function writeCurrentValuesToDefaultsDict() {
-        defaultsDict["pathString"] = pathField.stringValue()
+        defaultsDict['pathString'] = pathField.stringValue()
 
         var wellRGBColor = backgroundColorWell.color().colorUsingColorSpace(NSColorSpace.deviceRGBColorSpace());
-        var colorString = wellRGBColor.redComponent() + " " + wellRGBColor.greenComponent() + " " + wellRGBColor.blueComponent() + " " + wellRGBColor.alphaComponent()
-        defaultsDict["wellColor"] = colorString
+        var colorString = wellRGBColor.redComponent() + ' ' + wellRGBColor.greenComponent() + ' ' + wellRGBColor.blueComponent() + ' ' + wellRGBColor.alphaComponent()
+        defaultsDict['wellColor'] = colorString
 
         defaults.setObject_forKey(defaultsDict, defaultsKey)
         defaults.synchronize()
     }
 
     function pathString() {
-        return defaultsDict["pathString"] ? defaultsDict["pathString"] : NSHomeDirectory() + "/Desktop"
+        return defaultsDict['pathString'] ? defaultsDict['pathString'] : NSHomeDirectory() + '/Desktop'
     }
 
     function wellColor() {
-        if (defaultsDict["wellColor"]) {
-            var valuesArray = defaultsDict["wellColor"].componentsSeparatedByString(" ")
+        if (defaultsDict['wellColor']) {
+            var valuesArray = defaultsDict['wellColor'].componentsSeparatedByString(' ')
             return NSColor.colorWithDeviceRed_green_blue_alpha(valuesArray[0].floatValue(), valuesArray[1].floatValue(), valuesArray[2].floatValue(), valuesArray[3].floatValue())
         } else {
             return NSColor.whiteColor()
