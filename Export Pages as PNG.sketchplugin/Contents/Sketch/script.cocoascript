@@ -1,126 +1,126 @@
 var run = function(context, isAll) {
 
     var padding = 60 // TODO: Make this configurable
-    var document = context.document
-    var defaults = NSUserDefaults.standardUserDefaults()
-    var defaultsKey = 'VDExportPagesToPNG'
-    var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary()
-    var exportedCount = 0
+    var document = context.document;
+    var defaults = NSUserDefaults.standardUserDefaults();
+    var defaultsKey = 'VDExportPagesToPNG';
+    var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary();
+    var exportedCount = 0;
 
     // Alert
-    var alert = NSAlert.alloc().init()
+    var alert = NSAlert.alloc().init();
     alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
-    alert.addButtonWithTitle('Save')
-    alert.addButtonWithTitle('Cancel')
+    alert.addButtonWithTitle('Save');
+    alert.addButtonWithTitle('Cancel');
 
     // Accessory view
-    var accessoryView = NSView.alloc().initWithFrame(NSMakeRect(0,0, 336, 56))
+    var accessoryView = NSView.alloc().initWithFrame(NSMakeRect(0,0, 336, 56));
 
     // Path input
-    var inpPath = NSTextField.alloc().initWithFrame(NSMakeRect(0, 34, 244, 22))
-    inpPath.stringValue = getExportPath()
-    inpPath.selectable = false
-    inpPath.bezelStyle = NSTextFieldSquareBezel
-    accessoryView.addSubview(inpPath)
+    var inpPath = NSTextField.alloc().initWithFrame(NSMakeRect(0, 34, 244, 22));
+    inpPath.stringValue = getExportPath();
+    inpPath.selectable = false;
+    inpPath.bezelStyle = NSTextFieldSquareBezel;
+    accessoryView.addSubview(inpPath);
 
     // Choose path button
-    var btnChoosePath = NSButton.alloc().initWithFrame(NSMakeRect(246, 28, 96, 32))
-    btnChoosePath.bezelStyle = NSRoundedBezelStyle
-    btnChoosePath.setButtonType(NSMomentaryPushInButton)
-    btnChoosePath.title = 'Choose...'
+    var btnChoosePath = NSButton.alloc().initWithFrame(NSMakeRect(246, 28, 96, 32));
+    btnChoosePath.bezelStyle = NSRoundedBezelStyle;
+    btnChoosePath.setButtonType(NSMomentaryPushInButton);
+    btnChoosePath.title = 'Choose...';
     btnChoosePath.setCOSJSTargetFunction(function chooseDirectory() {
         // Configuring save panel
-        var openPanel = NSOpenPanel.openPanel()
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
+        var openPanel = NSOpenPanel.openPanel();
+        openPanel.canChooseFiles = false;
+        openPanel.canChooseDirectories = true;
         // Launching panel
-        var result = openPanel.runModal()
+        var result = openPanel.runModal();
         if (result == NSFileHandlingPanelOKButton) {
-            inpPath.stringValue = openPanel.URL().path()
+            inpPath.stringValue = openPanel.URL().path();
         }
     })
-    accessoryView.addSubview(btnChoosePath)
+    accessoryView.addSubview(btnChoosePath);
 
     // Background color label
-    var lbBackgroundColor = NSTextField.alloc().initWithFrame(NSMakeRect(1, 3, 245, 17))
-    lbBackgroundColor.stringValue = 'Background Color'
-    lbBackgroundColor.selectable = false
-    lbBackgroundColor.drawsBackground = false
-    lbBackgroundColor.bezeled = false
-    accessoryView.addSubview(lbBackgroundColor)
+    var lbBackgroundColor = NSTextField.alloc().initWithFrame(NSMakeRect(1, 3, 245, 17));
+    lbBackgroundColor.stringValue = 'Background color';
+    lbBackgroundColor.selectable = false;
+    lbBackgroundColor.drawsBackground = false;
+    lbBackgroundColor.bezeled = false;
+    accessoryView.addSubview(lbBackgroundColor);
 
     // Background color input
-    var inpBackgroundColor = NSColorWell.alloc().initWithFrame(NSMakeRect(252, 0, 84, 23))
-    inpBackgroundColor.bordered = true
-    inpBackgroundColor.color = getBackgroundColor()
-    accessoryView.addSubview(inpBackgroundColor)
+    var inpBackgroundColor = NSColorWell.alloc().initWithFrame(NSMakeRect(252, 0, 84, 23));
+    inpBackgroundColor.bordered = true;
+    inpBackgroundColor.color = getBackgroundColor();
+    accessoryView.addSubview(inpBackgroundColor);
 
-    alert.accessoryView = accessoryView
+    alert.accessoryView = accessoryView;
 
     // Display alert and handle result
-    var result = alert.runModal()
+    var result = alert.runModal();
     if (result == NSAlertFirstButtonReturn) {
-        saveDefaults()
-        var pagesLoop = context.document.pages().objectEnumerator()
-        var currentPage = context.document.currentPage()
+        saveDefaults();
+        var pagesLoop = context.document.pages().objectEnumerator();
+        var currentPage = context.document.currentPage();
         while (item = pagesLoop.nextObject()) {
             if (!isAll && item != currentPage) continue; // Skip if only exporting current page
             if (item.name() == 'Symbols') continue; // Skip Symbols page
             // Create encapsulating artboard
-            var artboard = MSArtboardGroup.alloc().initWithFrame(padRect(item.contentBounds()))
-            artboard.nodeName = item.name()
-            artboard.hasBackgroundColor = true
-            artboard.backgroundColor = MSColor.colorWithNSColor(getBackgroundColor())
-            artboard.includeBackgroundColorInExport = true
-            item.insertLayer_atIndex(artboard, 0)
+            var artboard = MSArtboardGroup.alloc().initWithFrame(padRect(item.contentBounds()));
+            artboard.nodeName = item.name();
+            artboard.hasBackgroundColor = true;
+            artboard.backgroundColor = MSColor.colorWithNSColor(getBackgroundColor());
+            artboard.includeBackgroundColorInExport = true;
+            item.insertLayer_atIndex(artboard, 0);
             // Export artboard
-            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(2.0, '', 'png')
-            artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0)
-            var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard)
-            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + artboard.nodeName() + '.png')
+            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(2.0, '', 'png');
+            artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0);
+            var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard);
+            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + artboard.nodeName() + '.png');
             // Clean up
-            item.removeLayerAtIndex(0)
+            item.removeLayerAtIndex(0);
             // Show feedback
             if (!isAll && item == currentPage) {
-                document.showMessage(item.name() + ' has been exported')
+                document.showMessage(item.name() + ' has been exported');
                 break;
             }
-            exportedCount++
-            document.showMessage(exportedCount + ' pages have been exported')
+            exportedCount++;
+            document.showMessage(exportedCount + ' pages have been exported');
         }
     }
 
     // Add paddings to rectangle
     function padRect(rect) {
-        rect.origin.x -= padding
-        rect.origin.y -= padding
-        rect.size.width += padding * 2
-        rect.size.height += padding * 2
-        return rect
+        rect.origin.x -= padding;
+        rect.origin.y -= padding;
+        rect.size.width += padding * 2;
+        rect.size.height += padding * 2;
+        return rect;
     }
 
     // Save current settings as default
     function saveDefaults() {
-        defaultsDict['exportPath'] = inpPath.stringValue()
+        defaultsDict['exportPath'] = inpPath.stringValue();
         var color = inpBackgroundColor.color().colorUsingColorSpace(NSColorSpace.deviceRGBColorSpace());
-        var colorString = color.redComponent() + ' ' + color.greenComponent() + ' ' + color.blueComponent() + ' ' + color.alphaComponent()
-        defaultsDict['backgroundColor'] = colorString
-        defaults.setObject_forKey(defaultsDict, defaultsKey)
-        defaults.synchronize()
+        var colorString = color.redComponent() + ' ' + color.greenComponent() + ' ' + color.blueComponent() + ' ' + color.alphaComponent();
+        defaultsDict['backgroundColor'] = colorString;
+        defaults.setObject_forKey(defaultsDict, defaultsKey);
+        defaults.synchronize();
     }
 
     // Get export path
     function getExportPath() {
-        return defaultsDict['exportPath'] ? defaultsDict['exportPath'] : NSHomeDirectory() + '/Desktop'
+        return defaultsDict['exportPath'] ? defaultsDict['exportPath'] : NSHomeDirectory() + '/Desktop';
     }
 
     // Get background color
     function getBackgroundColor() {
         if (defaultsDict['backgroundColor']) {
-            var valuesArray = defaultsDict['backgroundColor'].componentsSeparatedByString(' ')
-            return NSColor.colorWithDeviceRed_green_blue_alpha(valuesArray[0].floatValue(), valuesArray[1].floatValue(), valuesArray[2].floatValue(), valuesArray[3].floatValue())
+            var valuesArray = defaultsDict['backgroundColor'].componentsSeparatedByString(' ');
+            return NSColor.colorWithDeviceRed_green_blue_alpha(valuesArray[0].floatValue(), valuesArray[1].floatValue(), valuesArray[2].floatValue(), valuesArray[3].floatValue());
         } else {
-            return NSColor.whiteColor()
+            return NSColor.whiteColor();
         }
     }
 
@@ -128,9 +128,8 @@ var run = function(context, isAll) {
 
 var saveOne = function(context) {
     run(context);
-
-}
+};
 
 var saveAll = function(context) {
     run(context, true);
-}
+};
