@@ -13,7 +13,7 @@ var run = function(context, isAll) {
 
     // Define alert
     var alert = NSAlert.alloc().init()
-    alert.messageText = "Save page to..."
+    alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
     alert.addButtonWithTitle("Save")
     alert.addButtonWithTitle("Cancel")
 
