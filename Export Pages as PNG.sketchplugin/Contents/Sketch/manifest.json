@@ -3,23 +3,27 @@
   "commands" : [
     {
       "script" : "script.cocoascript",
-      "name" : "Export Pages as PNG...",
-      "handlers" : {
-        "run" : "onRun"
-      },
-      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+      "name" : "Export Current Page as PNG...",
+      "handlers": "saveOne",
+      "identifier" : "saveOne"
+    },
+    {
+      "script" : "script.cocoascript",
+      "name" : "Export All Pages as PNG...",
+      "handlers": "saveAll",
+      "identifier" : "saveAll"
     }
   ],
   "menu" : {
+    "title" : "Export Page",
     "items" : [
-      "com.bohemiancoding.sketch.runscriptidentifier"
-    ],
-    "isRoot" : true,
-    "title" : "Export Pages as PNG..."
+      "saveOne",
+      "saveAll"
+    ]
   },
-  "identifier" : "com.example.sketch.1d666e81-a776-4255-959f-b2a5f608ea79",
+  "identifier" : "com.example.sketch.e55228c5-78ad-4bb5-b20b-4808dfe1a971",
   "version" : "1.0",
   "description" : "",
   "authorEmail" : "",
-  "name" : "Export Pages as PNG"
+  "name" : "Export Page"
 }
