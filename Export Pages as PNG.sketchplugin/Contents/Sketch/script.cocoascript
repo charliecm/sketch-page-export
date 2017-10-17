@@ -1,61 +1,52 @@
+@import 'sketch-nibui.js';
+
 var run = function(context, isAll) {
 
-    var padding = 60 // TODO: Make this configurable
     var document = context.document;
     var defaults = NSUserDefaults.standardUserDefaults();
     var defaultsKey = 'VDExportPagesToPNG';
     var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary();
     var exportedCount = 0;
 
+    // Alert nib UI
+    var nibui = new NibUI(context, 'UIBundle', 'Alert',
+        [ 'path', 'browse', 'format', 'scale', 'bgColor', 'paddingTop', 'paddingLeft', 'paddingRight', 'paddingBottom' ]);
+
+    nibui.path.stringValue = getExportPath();
+
+    nibui.attachTargetAndAction(nibui.browse, function() {
+        // Show save panel
+        var openPanel = NSOpenPanel.openPanel();
+        openPanel.canChooseFiles = false;
+        openPanel.canChooseDirectories = true;
+        var result = openPanel.runModal();
+        if (result == NSFileHandlingPanelOKButton) {
+            nibui.path.stringValue = openPanel.URL().path();
+        }
+    });
+
+    nibui.bgColor.color = getBackgroundColor();
+
+    selectItem(nibui.format, defaultsDict['format']);
+    selectItem(nibui.scale, defaultsDict['scale']);
+
+    // nibui.attachTargetAndAction(nibui.format, function() {
+    //     log(nibui.format.titleOfSelectedItem());
+    // });
+
+    nibui.paddingTop.stringValue = getPadding(defaultsDict['paddingTop']).toString();
+    nibui.paddingLeft.stringValue = getPadding(defaultsDict['paddingLeft']).toString();
+    nibui.paddingRight.stringValue = getPadding(defaultsDict['paddingRight']).toString();
+    nibui.paddingBottom.stringValue = getPadding(defaultsDict['paddingBottom']).toString();
+
     // Alert
     var alert = NSAlert.alloc().init();
     alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
     alert.addButtonWithTitle('Save');
     alert.addButtonWithTitle('Cancel');
-
-    // Accessory view
-    var accessoryView = NSView.alloc().initWithFrame(NSMakeRect(0,0, 336, 56));
-
-    // Path input
-    var inpPath = NSTextField.alloc().initWithFrame(NSMakeRect(0, 34, 244, 22));
-    inpPath.stringValue = getExportPath();
-    inpPath.selectable = false;
-    inpPath.bezelStyle = NSTextFieldSquareBezel;
-    accessoryView.addSubview(inpPath);
-
-    // Choose path button
-    var btnChoosePath = NSButton.alloc().initWithFrame(NSMakeRect(246, 28, 96, 32));
-    btnChoosePath.bezelStyle = NSRoundedBezelStyle;
-    btnChoosePath.setButtonType(NSMomentaryPushInButton);
-    btnChoosePath.title = 'Choose...';
-    btnChoosePath.setCOSJSTargetFunction(function chooseDirectory() {
-        // Configuring save panel
-        var openPanel = NSOpenPanel.openPanel();
-        openPanel.canChooseFiles = false;
-        openPanel.canChooseDirectories = true;
-        // Launching panel
-        var result = openPanel.runModal();
-        if (result == NSFileHandlingPanelOKButton) {
-            inpPath.stringValue = openPanel.URL().path();
-        }
-    })
-    accessoryView.addSubview(btnChoosePath);
-
-    // Background color label
-    var lbBackgroundColor = NSTextField.alloc().initWithFrame(NSMakeRect(1, 3, 245, 17));
-    lbBackgroundColor.stringValue = 'Background color';
-    lbBackgroundColor.selectable = false;
-    lbBackgroundColor.drawsBackground = false;
-    lbBackgroundColor.bezeled = false;
-    accessoryView.addSubview(lbBackgroundColor);
-
-    // Background color input
-    var inpBackgroundColor = NSColorWell.alloc().initWithFrame(NSMakeRect(252, 0, 84, 23));
-    inpBackgroundColor.bordered = true;
-    inpBackgroundColor.color = getBackgroundColor();
-    accessoryView.addSubview(inpBackgroundColor);
-
-    alert.accessoryView = accessoryView;
+    // alert.setIcon(NSImage.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed('AlertIcon.png').path()));
+    alert.setAccessoryView(nibui.view);
+    alert.window().setInitialFirstResponder(nibui.paddingTop);
 
     // Display alert and handle result
     var result = alert.runModal();
@@ -74,10 +65,12 @@ var run = function(context, isAll) {
             artboard.includeBackgroundColorInExport = true;
             item.insertLayer_atIndex(artboard, 0);
             // Export artboard
-            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(2.0, '', 'png');
+            var format = nibui.format.titleOfSelectedItem().toLowerCase();
+            var scale = parseInt(nibui.scale.titleOfSelectedItem().substr(1,2)) || 2.0;
+            var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(scale, '', format);
             artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0);
             var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard);
-            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + artboard.nodeName() + '.png');
+            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + artboard.nodeName() + '.' + format);
             // Clean up
             item.removeLayerAtIndex(0);
             // Show feedback
@@ -90,21 +83,42 @@ var run = function(context, isAll) {
         }
     }
 
+    nibui.destroy();
+
+    function selectItem(target, title) {
+        if (target.indexOfItemWithTitle(title) != -1) {
+            target.selectItemWithTitle(title);
+        }
+    }
+
+    function getPadding(val) {
+        var num = parseInt(val);
+        if (isNaN(num)) return 100;
+        if (num < 0) return 0;
+        return num;
+    }
+
     // Add paddings to rectangle
     function padRect(rect) {
-        rect.origin.x -= padding;
-        rect.origin.y -= padding;
-        rect.size.width += padding * 2;
-        rect.size.height += padding * 2;
+        rect.origin.x -= getPadding(nibui.paddingLeft.stringValue());
+        rect.origin.y -= getPadding(nibui.paddingTop.stringValue());
+        rect.size.width += getPadding(nibui.paddingLeft.stringValue()) + getPadding(nibui.paddingRight.stringValue());
+        rect.size.height += getPadding(nibui.paddingTop.stringValue()) + getPadding(nibui.paddingBottom.stringValue());
         return rect;
     }
 
     // Save current settings as default
     function saveDefaults() {
-        defaultsDict['exportPath'] = inpPath.stringValue();
-        var color = inpBackgroundColor.color().colorUsingColorSpace(NSColorSpace.deviceRGBColorSpace());
+        defaultsDict['exportPath'] = nibui.path.stringValue();
+        var color = nibui.bgColor.color().colorUsingColorSpace(NSColorSpace.deviceRGBColorSpace());
         var colorString = color.redComponent() + ' ' + color.greenComponent() + ' ' + color.blueComponent() + ' ' + color.alphaComponent();
         defaultsDict['backgroundColor'] = colorString;
+        defaultsDict['format'] = nibui.format.titleOfSelectedItem();
+        defaultsDict['scale'] = nibui.scale.titleOfSelectedItem();
+        defaultsDict['paddingTop'] = getPadding(nibui.paddingTop.stringValue());
+        defaultsDict['paddingLeft'] = getPadding(nibui.paddingLeft.stringValue());
+        defaultsDict['paddingRight'] = getPadding(nibui.paddingRight.stringValue());
+        defaultsDict['paddingBottom'] = getPadding(nibui.paddingBottom.stringValue());
         defaults.setObject_forKey(defaultsDict, defaultsKey);
         defaults.synchronize();
     }
