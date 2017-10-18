@@ -140,10 +140,10 @@ var run = function(context, isAll) {
 
 }
 
-var saveOne = function(context) {
+var exportCurrent = function(context) {
     run(context);
 };
 
-var saveAll = function(context) {
+var exportAll = function(context) {
     run(context, true);
 };

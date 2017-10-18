@@ -1,6 +1,6 @@
 {
-  "name" : "Export Pages as PNG",
-  "description" : "Export a single or all pages as PNG.",
+  "name" : "Export Pages",
+  "description" : "Export one or all pages.",
   "author": "Charlie Chao",
   "homepage": "https://github.com/charliecm/Export-Pages-as-PNG",
   "identifier" : "com.charliechao.export-page",
@@ -9,22 +9,22 @@
   "commands" : [
     {
       "script" : "script.cocoascript",
-      "name" : "Export Current Page as PNG...",
-      "handler": "saveOne",
-      "identifier" : "saveOne"
+      "name" : "Export Current Page...",
+      "handler": "exportCurrent",
+      "identifier" : "exportCurrent"
     },
     {
       "script" : "script.cocoascript",
-      "name" : "Export All Pages as PNG...",
-      "handler": "saveAll",
-      "identifier" : "saveAll"
+      "name" : "Export All Pages...",
+      "handler": "exportAll",
+      "identifier" : "exportAll"
     }
   ],
   "menu" : {
     "title" : "Export Pages",
     "items" : [
-      "saveOne",
-      "saveAll"
+      "exportCurrent",
+      "exportAll"
     ]
   }
 }

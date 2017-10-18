@@ -1,10 +1,10 @@
-# Export Pages as PNG
+# Export Pages
 
-A simple plugin for exporting page(s) into PNG with specified paddings and background color. Useful for presenting flows with annotations outside artboards.
+A simple plugin for exporting page(s) as specified format with options for scale, background color and padding. Useful for presenting flows with annotations outside artboards.
 
 ## Commands
 
-- Export Current Page as PNG
-- Export All Pages as PNG
+- Export Current Page
+- Export All Pages
 
 This project is based on [exevil/Export-Pages-as-PNG](https://github.com/exevil/Export-Pages-as-PNG).
