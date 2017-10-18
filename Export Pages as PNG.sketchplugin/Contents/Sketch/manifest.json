@@ -1,9 +1,9 @@
 {
-  "name" : "Export Pages",
-  "description" : "Export one or all pages.",
+  "name" : "Page Export",
+  "description" : "Export one or all pages in the document.",
   "author": "Charlie Chao",
-  "homepage": "https://github.com/charliecm/Export-Pages-as-PNG",
-  "identifier" : "com.charliechao.export-page",
+  "homepage": "https://github.com/charliecm/sketch-page-export",
+  "identifier" : "com.charliechao.sketch-page-export",
   "version" : "1.0",
   "compatibleVersion": 47,
   "commands" : [
@@ -21,7 +21,7 @@
     }
   ],
   "menu" : {
-    "title" : "Export Pages",
+    "title" : "Page Export",
     "items" : [
       "exportCurrent",
       "exportAll"

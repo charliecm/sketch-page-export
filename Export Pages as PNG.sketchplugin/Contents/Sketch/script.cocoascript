@@ -85,12 +85,14 @@ var run = function(context, isAll) {
 
     nibui.destroy();
 
+    // Make NSPopUpButton select by title
     function selectItem(target, title) {
         if (target.indexOfItemWithTitle(title) != -1) {
             target.selectItemWithTitle(title);
         }
     }
 
+    // Returns a padding value as number
     function getPadding(val) {
         var num = parseInt(val);
         if (isNaN(num)) return 100;
@@ -140,10 +142,6 @@ var run = function(context, isAll) {
 
 }
 
-var exportCurrent = function(context) {
-    run(context);
-};
+var exportCurrent = (context) => { run(context); };
 
-var exportAll = function(context) {
-    run(context, true);
-};
+var exportAll = (context) => { run(context, true); };
