@@ -44,7 +44,7 @@ var run = function(context, isAll) {
     alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
     alert.addButtonWithTitle('Save');
     alert.addButtonWithTitle('Cancel');
-    // alert.setIcon(NSImage.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed('AlertIcon.png').path()));
+    alert.setIcon(NSImage.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed('AlertIcon.png').path()));
     alert.setAccessoryView(nibui.view);
     alert.window().setInitialFirstResponder(nibui.paddingTop);
 
