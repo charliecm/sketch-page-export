@@ -8,23 +8,23 @@
   "compatibleVersion": 47,
   "commands" : [
     {
-      "script" : "script.cocoascript",
-      "name" : "Export Current Page...",
+      "script": "script.cocoascript",
+      "name": "Export Current Page...",
       "handler": "exportCurrent",
-      "identifier" : "exportCurrent",
+      "identifier": "exportCurrent",
       "icon": "AlertIcon.png"
     },
     {
-      "script" : "script.cocoascript",
-      "name" : "Export All Pages...",
+      "script": "script.cocoascript",
+      "name": "Export All Pages...",
       "handler": "exportAll",
-      "identifier" : "exportAll",
+      "identifier": "exportAll",
       "icon": "AlertIcon.png"
     }
   ],
-  "menu" : {
-    "title" : "Page Export",
-    "items" : [
+  "menu": {
+    "title": "Page Export",
+    "items": [
       "exportCurrent",
       "exportAll"
     ]
