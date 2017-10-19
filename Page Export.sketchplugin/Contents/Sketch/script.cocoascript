@@ -96,7 +96,7 @@ var run = function(context, isAll) {
 
     // Make NSPopUpButton select by title
     function selectItem(target, title) {
-        if (target.indexOfItemWithTitle(title) != -1) {
+        if (title != null && target.indexOfItemWithTitle(title) != -1) {
             target.selectItemWithTitle(title);
         }
     }
