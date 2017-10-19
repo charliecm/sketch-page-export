@@ -2,6 +2,10 @@
 
 var run = function(context, isAll) {
 
+    const DEFAULT_PATH = NSHomeDirectory() + '/Desktop';
+    const DEFAULT_SCALE = 2.0;
+    const DEFAULT_PADDING = 100;
+
     var document = context.document;
     var exportedCount = 0;
 
@@ -61,7 +65,7 @@ var run = function(context, isAll) {
             item.insertLayer_atIndex(artboard, 0);
             // Export artboard
             var format = nibui.format.titleOfSelectedItem().toLowerCase();
-            var scale = parseInt(nibui.scale.titleOfSelectedItem().substr(1,2)) || 2.0;
+            var scale = parseInt(nibui.scale.titleOfSelectedItem().substr(1, 2)) || DEFAULT_SCALE;
             var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(scale, '', format);
             artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0);
             var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard);
@@ -104,7 +108,7 @@ var run = function(context, isAll) {
     // Returns a padding value as number
     function getPadding(val) {
         var num = parseInt(val);
-        if (isNaN(num)) return 100;
+        if (isNaN(num)) return DEFAULT_PADDING;
         if (num < 0) return 0;
         return num;
     }
