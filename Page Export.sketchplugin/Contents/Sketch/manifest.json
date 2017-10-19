@@ -4,7 +4,7 @@
   "author": "Charlie Chao",
   "homepage": "https://github.com/charliecm/sketch-page-export",
   "identifier" : "com.charliechao.sketch-page-export",
-  "version" : "1.0.0",
+  "version" : "1.0.1",
   "compatibleVersion": 47,
   "commands" : [
     {
