@@ -4,20 +4,22 @@
   "author": "Charlie Chao",
   "homepage": "https://github.com/charliecm/sketch-page-export",
   "identifier" : "com.charliechao.sketch-page-export",
-  "version" : "1.0",
+  "version" : "1.0.0",
   "compatibleVersion": 47,
   "commands" : [
     {
       "script" : "script.cocoascript",
       "name" : "Export Current Page...",
       "handler": "exportCurrent",
-      "identifier" : "exportCurrent"
+      "identifier" : "exportCurrent",
+      "icon": "AlertIcon.png"
     },
     {
       "script" : "script.cocoascript",
       "name" : "Export All Pages...",
       "handler": "exportAll",
-      "identifier" : "exportAll"
+      "identifier" : "exportAll",
+      "icon": "AlertIcon.png"
     }
   ],
   "menu" : {
