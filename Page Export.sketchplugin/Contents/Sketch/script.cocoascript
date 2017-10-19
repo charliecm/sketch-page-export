@@ -3,17 +3,19 @@
 var run = function(context, isAll) {
 
     var document = context.document;
-    var defaults = NSUserDefaults.standardUserDefaults();
-    var defaultsKey = 'VDExportPagesToPNG';
-    var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary();
     var exportedCount = 0;
+
+    // Preferences
+    var defaults = NSUserDefaults.standardUserDefaults();
+    var defaultsKey = 'SketchPageExport';
+    var defaultsDict = defaults.objectForKey(defaultsKey) ? defaults.objectForKey(defaultsKey).mutableCopy() : NSMutableDictionary.dictionary();
 
     // Alert nib UI
     var nibui = new NibUI(context, 'UIBundle', 'Alert',
         [ 'path', 'browse', 'format', 'scale', 'bgColor', 'paddingTop', 'paddingLeft', 'paddingRight', 'paddingBottom' ]);
 
+    // Setup alert view
     nibui.path.stringValue = getExportPath();
-
     nibui.attachTargetAndAction(nibui.browse, function() {
         // Show save panel
         var openPanel = NSOpenPanel.openPanel();
@@ -24,22 +26,15 @@ var run = function(context, isAll) {
             nibui.path.stringValue = openPanel.URL().path();
         }
     });
-
     nibui.bgColor.color = getBackgroundColor();
-
     selectItem(nibui.format, defaultsDict['format']);
     selectItem(nibui.scale, defaultsDict['scale']);
-
-    // nibui.attachTargetAndAction(nibui.format, function() {
-    //     log(nibui.format.titleOfSelectedItem());
-    // });
-
     nibui.paddingTop.stringValue = getPadding(defaultsDict['paddingTop']).toString();
     nibui.paddingLeft.stringValue = getPadding(defaultsDict['paddingLeft']).toString();
     nibui.paddingRight.stringValue = getPadding(defaultsDict['paddingRight']).toString();
     nibui.paddingBottom.stringValue = getPadding(defaultsDict['paddingBottom']).toString();
 
-    // Alert
+    // Create alert
     var alert = NSAlert.alloc().init();
     alert.messageText = isAll ? 'Save all pages to...' : 'Save current page to...';
     alert.addButtonWithTitle('Save');
@@ -85,6 +80,20 @@ var run = function(context, isAll) {
 
     nibui.destroy();
 
+    // Get export path
+    function getExportPath() {
+        return defaultsDict['exportPath'] ? defaultsDict['exportPath'] : DEFAULT_PATH;
+    }
+
+    // Get background color
+    function getBackgroundColor() {
+        if (!defaultsDict['backgroundColor']) {
+            return NSColor.whiteColor();
+        }
+        var valuesArray = defaultsDict['backgroundColor'].componentsSeparatedByString(' ');
+        return NSColor.colorWithDeviceRed_green_blue_alpha(valuesArray[0].floatValue(), valuesArray[1].floatValue(), valuesArray[2].floatValue(), valuesArray[3].floatValue());
+    }
+
     // Make NSPopUpButton select by title
     function selectItem(target, title) {
         if (target.indexOfItemWithTitle(title) != -1) {
@@ -109,7 +118,7 @@ var run = function(context, isAll) {
         return rect;
     }
 
-    // Save current settings as default
+    // Save preferences
     function saveDefaults() {
         defaultsDict['exportPath'] = nibui.path.stringValue();
         var color = nibui.bgColor.color().colorUsingColorSpace(NSColorSpace.deviceRGBColorSpace());
@@ -123,21 +132,6 @@ var run = function(context, isAll) {
         defaultsDict['paddingBottom'] = getPadding(nibui.paddingBottom.stringValue());
         defaults.setObject_forKey(defaultsDict, defaultsKey);
         defaults.synchronize();
-    }
-
-    // Get export path
-    function getExportPath() {
-        return defaultsDict['exportPath'] ? defaultsDict['exportPath'] : NSHomeDirectory() + '/Desktop';
-    }
-
-    // Get background color
-    function getBackgroundColor() {
-        if (defaultsDict['backgroundColor']) {
-            var valuesArray = defaultsDict['backgroundColor'].componentsSeparatedByString(' ');
-            return NSColor.colorWithDeviceRed_green_blue_alpha(valuesArray[0].floatValue(), valuesArray[1].floatValue(), valuesArray[2].floatValue(), valuesArray[3].floatValue());
-        } else {
-            return NSColor.whiteColor();
-        }
     }
 
 }
