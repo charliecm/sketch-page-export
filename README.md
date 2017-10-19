@@ -15,5 +15,5 @@ With Sketch Runner, just go to the `install` command and search for `Page Export
 
 ## Release Notes
 
-**1.0.1** — Fix dialog not showing up.
-**1.0.0** — Initial release.
+- **1.0.1** — Fix dialog not showing up.
+- **1.0.0** — Initial release.

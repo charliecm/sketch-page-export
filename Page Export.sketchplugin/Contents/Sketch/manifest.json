@@ -1,6 +1,6 @@
 {
   "name" : "Page Export",
-  "description" : "Export one or all pages in the document.",
+  "description" : "Export the current or all pages in the document.",
   "author": "Charlie Chao",
   "homepage": "https://github.com/charliecm/sketch-page-export",
   "identifier" : "com.charliechao.sketch-page-export",
