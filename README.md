@@ -15,6 +15,6 @@ With Sketch Runner, just go to the `install` command and search for `Page Export
 
 ## Release Notes
 
-- **1.0.2** - Fix export not working for Sketch 49.
+- **1.0.2** — Fix export not working for Sketch 49.
 - **1.0.1** — Fix dialog not showing up.
 - **1.0.0** — Initial release.
