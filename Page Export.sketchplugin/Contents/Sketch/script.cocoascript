@@ -56,20 +56,20 @@ var run = function(context, isAll) {
         while (item = pagesLoop.nextObject()) {
             if (!isAll && item != currentPage) continue; // Skip if only exporting current page
             if (item.name() == 'Symbols') continue; // Skip Symbols page
-            // Create encapsulating artboard
-            var artboard = MSArtboardGroup.alloc().initWithFrame(padRect(item.contentBounds()));
-            artboard.nodeName = item.name();
-            artboard.hasBackgroundColor = true;
-            artboard.backgroundColor = MSColor.colorWithNSColor(getBackgroundColor());
-            artboard.includeBackgroundColorInExport = true;
-            item.insertLayer_atIndex(artboard, 0);
-            // Export artboard
+            // Create encapsulating slice
+            var slice = MSSliceLayer.alloc().initWithFrame(padRect(item.contentBounds()));
+            slice.nodeName = item.name();
+            slice.hasBackgroundColor = true;
+            slice.backgroundColor = MSColor.colorWithNSColor(getBackgroundColor());
+            slice.includeBackgroundColorInExport = true;
+            item.insertLayer_atIndex(slice, 0);
+            // Export slice
             var format = nibui.format.titleOfSelectedItem().toLowerCase();
             var scale = parseInt(nibui.scale.titleOfSelectedItem().substr(1, 2)) || DEFAULT_SCALE;
             var exportFormat = MSExportFormat.formatWithScale_name_fileFormat(scale, '', format);
-            artboard.exportOptions().insertExportFormat_atIndex(exportFormat, 0);
-            var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(artboard);
-            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + artboard.nodeName() + '.' + format);
+            slice.exportOptions().insertExportFormat_atIndex(exportFormat, 0);
+            var exportRequests = MSExportRequest.exportRequestsFromExportableLayer(slice);
+            document.saveExportRequest_toFile(exportRequests[0], getExportPath() + '/' + slice.nodeName() + '.' + format);
             // Clean up
             item.removeLayerAtIndex(0);
             // Show feedback
