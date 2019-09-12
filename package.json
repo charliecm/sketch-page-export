@@ -1,0 +1,15 @@
+{
+  "name": "sketch-page-export",
+  "description": "A simple Sketch plugin for exporting page(s).",
+  "version": "1.0.3",
+  "author": "Charlie Chao",
+  "license": "MIT",
+  "homepage": "https://github.com/charliecm/sketch-page-export#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charliecm/sketch-page-export.git"
+  },
+  "bugs": {
+    "url": "https://github.com/charliecm/sketch-page-export/issues"
+  }
+}
